@@ -1,0 +1,36 @@
+# Unity generated folders and files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+.vs/
+.idea/
+*.DS_Store
+
+# Local-only art assets (kept on this machine, NOT uploaded to GitHub)
+Assets/Art/
+Assets/Models/
+Assets/Textures/
+Assets/Audio/
+Assets/Video/
+Assets/Materials/
+Assets/Animations/
