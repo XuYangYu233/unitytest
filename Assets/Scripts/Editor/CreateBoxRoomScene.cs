@@ -93,6 +93,13 @@ namespace BoxRoom.EditorTools
             return bounds;
         }
 
+        [MenuItem("Tools/BoxRoom/Open Scene")]
+        public static void OpenScene()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            EditorSceneManager.SetActiveScene(scene);
+            Debug.Log("[BoxRoom] Opened scene: " + ScenePath);
+        }
         private static void AddSceneToBuildSettings()
         {
             List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
