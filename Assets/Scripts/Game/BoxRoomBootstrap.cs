@@ -15,10 +15,18 @@ namespace BoxRoom
         public Color ceilingColor = new Color(0.62f, 0.65f, 0.70f);
         public Color crateColor = new Color(0.55f, 0.36f, 0.18f);
 
+        [Header("Ceiling Light")]
+        public GameObject ceilingLampModel;
+        public float ceilingLampScale = 1.5f;
+        public Color ceilingLightColor = new Color(1f, 0.88f, 0.70f);
+        [Range(0.1f, 10f)] public float ceilingLightIntensity = 4f;
+        [Range(1f, 40f)] public float ceilingLightRange = 30f;
+
         private void Awake()
         {
             if (transform.Find("Room") == null) BuildRoom();
             if (transform.Find("Sun") == null) BuildLights();
+            if (transform.Find("CeilingLamp") == null) BuildCeilingLight();
             if (transform.Find("Player") == null) BuildPlayer();
             TryPlaceDecoration();
         }
@@ -49,6 +57,44 @@ namespace BoxRoom
             light.type = LightType.Directional;
             light.intensity = 1.2f;
             light.shadows = LightShadows.Soft;
+        }
+
+        public void BuildCeilingLight()
+        {
+            GameObject fixture = new GameObject("CeilingLamp");
+            fixture.transform.SetParent(transform, false);
+            fixture.transform.localPosition = new Vector3(0f, size - 0.08f, 0f);
+
+            if (ceilingLampModel != null)
+            {
+                GameObject model = Instantiate(ceilingLampModel, fixture.transform, false);
+                model.name = "lampSquareCeiling";
+                model.transform.localPosition = Vector3.zero;
+                model.transform.localRotation = Quaternion.identity;
+                model.transform.localScale = Vector3.one * ceilingLampScale;
+            }
+            else
+            {
+                CreateCube(
+                    "LampFallback",
+                    new Vector3(1.5f, 0.12f, 1.5f),
+                    new Vector3(0f, -0.06f, 0f),
+                    ceilingLightColor,
+                    fixture.transform
+                );
+            }
+
+            GameObject lightObject = new GameObject("CeilingLightSource");
+            lightObject.transform.SetParent(fixture.transform, false);
+            lightObject.transform.localPosition = new Vector3(0f, -0.35f, 0f);
+
+            Light ceilingLight = lightObject.AddComponent<Light>();
+            ceilingLight.type = LightType.Point;
+            ceilingLight.color = ceilingLightColor;
+            ceilingLight.intensity = ceilingLightIntensity;
+            ceilingLight.range = ceilingLightRange;
+            ceilingLight.shadows = LightShadows.Soft;
+            ceilingLight.shadowStrength = 0.85f;
         }
 
         public void BuildPlayer()

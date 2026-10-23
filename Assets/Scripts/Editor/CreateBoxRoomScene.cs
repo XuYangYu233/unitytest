@@ -10,6 +10,7 @@ namespace BoxRoom.EditorTools
     {
         private const string ScenePath = "Assets/Scenes/BoxRoom.unity";
         private const string CrateModelPath = "Assets/Art/Kenney/PlatformerKit/Models/FBX format/crate.fbx";
+        private const string CeilingLampModelPath = "Assets/ThirdParty/Kenney/FurnitureKit/lampSquareCeiling.fbx";
 
         [MenuItem("Tools/BoxRoom/Create Scene")]
         public static void CreateScene()
@@ -20,6 +21,12 @@ namespace BoxRoom.EditorTools
             BoxRoomBootstrap bootstrap = root.AddComponent<BoxRoomBootstrap>();
             bootstrap.BuildRoom();
             bootstrap.BuildLights();
+            bootstrap.ceilingLampModel = AssetDatabase.LoadAssetAtPath<GameObject>(CeilingLampModelPath);
+            if (bootstrap.ceilingLampModel == null)
+            {
+                Debug.LogWarning("[BoxRoom] Ceiling lamp model not found, using fallback: " + CeilingLampModelPath);
+            }
+            bootstrap.BuildCeilingLight();
 
             GameObject decor = new GameObject("Decor");
             decor.transform.SetParent(root.transform, false);
@@ -100,24 +107,12 @@ namespace BoxRoom.EditorTools
             EditorSceneManager.SetActiveScene(scene);
             Debug.Log("[BoxRoom] Opened scene: " + ScenePath);
         }
+
         private static void AddSceneToBuildSettings()
         {
             List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
-            bool exists = false;
-            for (int i = 0; i < scenes.Count; i++)
-            {
-                if (scenes[i].path == ScenePath)
-                {
-                    exists = true;
-                    scenes[i] = new EditorBuildSettingsScene(ScenePath, true);
-                    break;
-                }
-            }
-
-            if (!exists)
-            {
-                scenes.Add(new EditorBuildSettingsScene(ScenePath, true));
-            }
+            scenes.RemoveAll(scene => scene.path == ScenePath);
+            scenes.Insert(0, new EditorBuildSettingsScene(ScenePath, true));
 
             EditorBuildSettings.scenes = scenes.ToArray();
         }
